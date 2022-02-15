@@ -74,7 +74,6 @@ extension FilesViewController: UIImagePickerControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) { //unsafe
         print("aaa")
         guard let imageData = info[.editedImage] as? Data else {return} //можно ли так?
-        print("ccccc")
         print("ddddd", imageData)
         let fileName = "photo" + String(arrayOfPhotos.count + 1)
         let filePath = documentsUrl!.appendingPathComponent(fileName)
