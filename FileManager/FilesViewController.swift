@@ -3,15 +3,17 @@ import UIKit
 
 class FilesViewController: UIViewController {
 
+    
+    
     @objc func addFile(){
         let imagePicker = UIImagePickerController()
-        self.present(imagePicker, animated: true, completion: nil)
+        imagePicker.delegate = self
+        self.present(imagePicker, animated: true)
     }
     
-                                        //перенести в отдельный класс модели?
     var arrayOfPhotos: [UIImage] = []
     var documentsUrl: URL?
-    
+    let filesView = FilesView()
     
     private func fetchPhotos() -> [UIImage] {
         var imagesArray: [UIImage] = []
@@ -22,65 +24,74 @@ class FilesViewController: UIViewController {
             contents = try FileManager.default.contentsOfDirectory(at: documentsUrl!, includingPropertiesForKeys: nil, options: [])
         } catch {print(error)}
         contents.forEach { imageURL in
-            var imageData: Data = Data()
+            var imageData: Data?
             do {try imageData = Data(contentsOf: imageURL)} catch {print(error)}
-            imagesArray.append(UIImage.init(data: imageData)!) //unsafe
+            imagesArray.append(UIImage.init(data: imageData!)!) //unsafe
+            print(imagesArray)
         }
         print(contents)
         return imagesArray
     }
     
-    
     override func loadView() {
-        self.view = FilesView()
+        self.view = filesView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         arrayOfPhotos = fetchPhotos()
+        filesView.collectionView.reloadData()
+        
         self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFile)), animated: true)
+        filesView.collectionView.dataSource = self
+        filesView.collectionView.delegate = self
         
-        print(arrayOfPhotos)
-        
-        
-        //перенести в класс таббара?
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
         navBarAppearance.backgroundColor = .systemBackground
         self.navigationController?.navigationBar.standardAppearance = navBarAppearance
         navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
-        //----
-        
     }
 }
 
-extension FilesViewController: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return arrayOfPhotos.count
+extension FilesViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        arrayOfPhotos.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = UITableViewCell()
-        cell.textLabel?.text = String(describing: arrayOfPhotos[indexPath.row]) //(placeholder)
-        //надо сделать кастомную ячейку
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotosCollectionViewCell.self), for: indexPath) as! PhotosCollectionViewCell
+        cell.imageView.image = arrayOfPhotos[indexPath.item]
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Photos"
+}
+
+extension FilesViewController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
+        return CGSize(width: collectionView.frame.width/3 - 16, height: collectionView.frame.width/3 - 16)
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat{
+        return 8
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat{
+        return 8
+    }
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{
+        return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }
-extension FilesViewController: UIImagePickerControllerDelegate {
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) { //unsafe
-        print("aaa")
-        guard let imageData = info[.editedImage] as? Data else {return} //можно ли так?
-        print("ddddd", imageData)
+
+
+
+extension FilesViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        let image: UIImage = info[.originalImage] as! UIImage// else {print ("fff"); return} //unsafe
         let fileName = "photo" + String(arrayOfPhotos.count + 1)
         let filePath = documentsUrl!.appendingPathComponent(fileName)
-        FileManager.default.createFile(atPath: filePath.path, contents: imageData, attributes: nil)
+        FileManager.default.createFile(atPath: filePath.path, contents: image.pngData()!, attributes: nil) //unsafe
         arrayOfPhotos = fetchPhotos()
-        let filesView = self.view as! FilesView
-        filesView.documentsTable.reloadData()
+        filesView.collectionView.reloadData()
+        picker.dismiss(animated: true)
     }
 }
 
