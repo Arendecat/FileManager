@@ -3,7 +3,9 @@ import UIKit
 
 class FilesViewController: UIViewController {
 
-    
+    private var arrayOfPhotos: [UIImage] = []
+    private var documentsUrl: URL?
+    private let filesView = FilesView()
     
     @objc func addFile(){
         let imagePicker = UIImagePickerController()
@@ -11,25 +13,22 @@ class FilesViewController: UIViewController {
         self.present(imagePicker, animated: true)
     }
     
-    var arrayOfPhotos: [UIImage] = []
-    var documentsUrl: URL?
-    let filesView = FilesView()
-    
     private func fetchPhotos() -> [UIImage] {
         var imagesArray: [UIImage] = []
-        
         var contents: [URL] = []
+        
         do {
             documentsUrl = try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             contents = try FileManager.default.contentsOfDirectory(at: documentsUrl!, includingPropertiesForKeys: nil, options: [])
         } catch {print(error)}
+        
         contents.forEach { imageURL in
             var imageData: Data?
             do {try imageData = Data(contentsOf: imageURL)} catch {print(error)}
-            imagesArray.append(UIImage.init(data: imageData!)!) //unsafe
-            print(imagesArray)
+            var image: UIImage?
+            if (imageData != nil) { image = UIImage.init(data: imageData!) }
+            if (image != nil) { imagesArray.append(image!) }
         }
-        print(contents)
         return imagesArray
     }
     
@@ -41,11 +40,11 @@ class FilesViewController: UIViewController {
         super.viewDidLoad()
         arrayOfPhotos = fetchPhotos()
         filesView.collectionView.reloadData()
-        
-        self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFile)), animated: true)
         filesView.collectionView.dataSource = self
         filesView.collectionView.delegate = self
         
+        self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addFile)), animated: true)
+
         let navBarAppearance = UINavigationBarAppearance()
         navBarAppearance.configureWithOpaqueBackground()
         navBarAppearance.backgroundColor = .systemBackground
@@ -58,7 +57,6 @@ extension FilesViewController: UICollectionViewDelegate, UICollectionViewDataSou
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         arrayOfPhotos.count
     }
-    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotosCollectionViewCell.self), for: indexPath) as! PhotosCollectionViewCell
         cell.imageView.image = arrayOfPhotos[indexPath.item]
@@ -81,14 +79,12 @@ extension FilesViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
-
 extension FilesViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        let image: UIImage = info[.originalImage] as! UIImage// else {print ("fff"); return} //unsafe
+        guard let image: UIImage = info[.originalImage] as? UIImage else {print ("ошибка получения данных"); return}
         let fileName = "photo" + String(arrayOfPhotos.count + 1)
         let filePath = documentsUrl!.appendingPathComponent(fileName)
-        FileManager.default.createFile(atPath: filePath.path, contents: image.pngData()!, attributes: nil) //unsafe
+        FileManager.default.createFile(atPath: filePath.path, contents: image.pngData()!, attributes: nil)
         arrayOfPhotos = fetchPhotos()
         filesView.collectionView.reloadData()
         picker.dismiss(animated: true)
