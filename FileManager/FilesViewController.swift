@@ -6,6 +6,8 @@ class FilesViewController: UIViewController {
     private var arrayOfPhotos: [UIImage] = []
     private var documentsUrl: URL?
     private let filesView = FilesView()
+    private let userDefaults = UserDefaults.standard
+    private var isAlphabetSort: Bool = true
     
     @objc func addFile(){
         let imagePicker = UIImagePickerController()
@@ -36,10 +38,18 @@ class FilesViewController: UIViewController {
         self.view = filesView
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        isAlphabetSort = userDefaults.bool(forKey: "isAlphabetSort")
+        filesView.collectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        if (userDefaults.string(forKey: "isAlphabetSort") == nil) {
+            userDefaults.setValue(true, forKey: "isAlphabetSort")
+        }
         arrayOfPhotos = fetchPhotos()
-        filesView.collectionView.reloadData()
         filesView.collectionView.dataSource = self
         filesView.collectionView.delegate = self
         
@@ -59,22 +69,26 @@ extension FilesViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: PhotosCollectionViewCell.self), for: indexPath) as! PhotosCollectionViewCell
-        cell.imageView.image = arrayOfPhotos[indexPath.item]
+        if(isAlphabetSort) {
+            cell.imageView.image = arrayOfPhotos[indexPath.item] //алфавитный порядок
+        } else {
+            cell.imageView.image = arrayOfPhotos[arrayOfPhotos.count - indexPath.item - 1] //обратный порядок
+        }
         return cell
     }
 }
 
 extension FilesViewController: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.frame.width/3 - 16, height: collectionView.frame.width/3 - 16)
     }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 8
     }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return 8
     }
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets{
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         return UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }

@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		780DE1DE27CCEA1800C89B4D /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780DE1DD27CCEA1700C89B4D /* LoginViewController.swift */; };
+		780DE1E027CCEA4200C89B4D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780DE1DF27CCEA4200C89B4D /* LoginView.swift */; };
+		780DE1E227D10B3900C89B4D /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780DE1E127D10B3800C89B4D /* SettingsView.swift */; };
+		780DE1E427D10C2200C89B4D /* SettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 780DE1E327D10C2200C89B4D /* SettingsViewController.swift */; };
 		787B313F27BA553D0063A5D6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B313E27BA553D0063A5D6 /* AppDelegate.swift */; };
 		787B314127BA553D0063A5D6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B314027BA553D0063A5D6 /* SceneDelegate.swift */; };
 		787B314327BA553D0063A5D6 /* FilesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787B314227BA553D0063A5D6 /* FilesViewController.swift */; };
@@ -17,6 +21,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		780DE1DD27CCEA1700C89B4D /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		780DE1DF27CCEA4200C89B4D /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		780DE1E127D10B3800C89B4D /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		780DE1E327D10C2200C89B4D /* SettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewController.swift; sourceTree = "<group>"; };
 		787B313B27BA553C0063A5D6 /* FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		787B313E27BA553D0063A5D6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		787B314027BA553D0063A5D6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -60,12 +68,16 @@
 			children = (
 				787B313E27BA553D0063A5D6 /* AppDelegate.swift */,
 				787B314027BA553D0063A5D6 /* SceneDelegate.swift */,
-				787B314227BA553D0063A5D6 /* FilesViewController.swift */,
-				787B315627BBF4E90063A5D6 /* FilesView.swift */,
-				787B315227BA55F10063A5D6 /* MainTabBar.swift */,
 				787B314727BA55410063A5D6 /* Assets.xcassets */,
 				787B314927BA55410063A5D6 /* LaunchScreen.storyboard */,
 				787B314C27BA55410063A5D6 /* Info.plist */,
+				787B315227BA55F10063A5D6 /* MainTabBar.swift */,
+				780DE1DD27CCEA1700C89B4D /* LoginViewController.swift */,
+				780DE1DF27CCEA4200C89B4D /* LoginView.swift */,
+				787B314227BA553D0063A5D6 /* FilesViewController.swift */,
+				787B315627BBF4E90063A5D6 /* FilesView.swift */,
+				780DE1E327D10C2200C89B4D /* SettingsViewController.swift */,
+				780DE1E127D10B3800C89B4D /* SettingsView.swift */,
 			);
 			path = FileManager;
 			sourceTree = "<group>";
@@ -140,11 +152,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				780DE1DE27CCEA1800C89B4D /* LoginViewController.swift in Sources */,
+				780DE1E227D10B3900C89B4D /* SettingsView.swift in Sources */,
+				780DE1E027CCEA4200C89B4D /* LoginView.swift in Sources */,
 				787B315727BBF4E90063A5D6 /* FilesView.swift in Sources */,
 				787B315327BA55F10063A5D6 /* MainTabBar.swift in Sources */,
 				787B314327BA553D0063A5D6 /* FilesViewController.swift in Sources */,
 				787B313F27BA553D0063A5D6 /* AppDelegate.swift in Sources */,
 				787B314127BA553D0063A5D6 /* SceneDelegate.swift in Sources */,
+				780DE1E427D10C2200C89B4D /* SettingsViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

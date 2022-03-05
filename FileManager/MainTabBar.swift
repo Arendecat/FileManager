@@ -13,6 +13,7 @@ class MainTabBarController: UITabBarController, UITabBarControllerDelegate{
     func controllerSetup(){
         viewControllers = [
             createNavController(for: FilesViewController(), title: "Files", image: UIImage(systemName: "folder")!),
+            createNavController(for: SettingsViewController(), title: "Settings", image: UIImage(systemName: "gear")!)
         ]
     }
 
